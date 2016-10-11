@@ -822,6 +822,9 @@ public class ShimmerFrameLayout extends FrameLayout {
         int height = mMask.maskHeight(getHeight());
 
         mMaskBitmap = createBitmapAndGcIfNecessary(width, height);
+        if (mMaskBitmap == null) {
+            return null;
+        }
         Canvas canvas = new Canvas(mMaskBitmap);
         Shader gradient;
         switch (mMask.shape) {
@@ -868,14 +871,13 @@ public class ShimmerFrameLayout extends FrameLayout {
             case RADIAL: {
                 int x = width / 2;
                 int y = height / 2;
-                gradient =
-                        new RadialGradient(
-                                x,
-                                y,
-                                (float) (Math.max(width, height) / Math.sqrt(2)),
-                                mMask.getGradientColors(),
-                                mMask.getGradientPositions(),
-                                Shader.TileMode.REPEAT);
+                gradient = new RadialGradient(
+                        x,
+                        y,
+                        (float) (Math.max(width, height) / Math.sqrt(2)),
+                        mMask.getGradientColors(),
+                        mMask.getGradientPositions(),
+                        Shader.TileMode.REPEAT);
                 break;
             }
         }
@@ -945,7 +947,7 @@ public class ShimmerFrameLayout extends FrameLayout {
             return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         } catch (OutOfMemoryError e) {
             System.gc();
-            return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         }
+        return null;
     }
 }
